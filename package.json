@@ -12,6 +12,7 @@
     "googleapis": "",
     "googleplaces": "^0.6.1",
     "lodash": "",
-    "sabre-dev-studio": "^1.2.0"
+    "sabre-dev-studio": "^1.2.0",
+    "async": ""
   }
 }
