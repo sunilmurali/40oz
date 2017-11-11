@@ -7,5 +7,11 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "googleapis": "",
+    "googleplaces": "^0.6.1",
+    "lodash": "",
+    "sabre-dev-studio": "^1.2.0"
+  }
 }
