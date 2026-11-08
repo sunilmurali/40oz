@@ -29,6 +29,146 @@
             border-radius: 20px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
             overflow: hidden;
+            transition: background 1s ease-in-out;
+        }
+
+        .background-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+            z-index: 0;
+        }
+
+        .background-layer.active {
+            opacity: 1;
+        }
+
+        .bg-mountain {
+            background: linear-gradient(180deg, 
+                #87CEEB 0%, 
+                #B0E0E6 30%, 
+                #98D8C8 50%, 
+                #6B8E23 70%, 
+                #556B2F 85%, 
+                #3D5229 100%);
+        }
+
+        .bg-mountain::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 60%;
+            background: 
+                radial-gradient(ellipse at 20% 60%, rgba(139, 137, 137, 0.4) 0%, transparent 50%),
+                radial-gradient(ellipse at 60% 70%, rgba(128, 128, 128, 0.5) 0%, transparent 50%),
+                radial-gradient(ellipse at 85% 65%, rgba(119, 136, 153, 0.3) 0%, transparent 50%);
+        }
+
+        .bg-ocean {
+            background: linear-gradient(180deg, 
+                #FFE5B4 0%, 
+                #FFDAB9 10%,
+                #87CEEB 30%, 
+                #4682B4 60%, 
+                #2F4F7F 80%, 
+                #1C3F5A 100%);
+        }
+
+        .bg-ocean::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 40%;
+            background: repeating-linear-gradient(
+                90deg,
+                rgba(255, 255, 255, 0.1) 0px,
+                transparent 20px,
+                rgba(255, 255, 255, 0.05) 40px
+            );
+        }
+
+        .bg-sunset {
+            background: linear-gradient(180deg, 
+                #FF6B9D 0%, 
+                #FFA07A 20%, 
+                #FFD700 35%, 
+                #FF8C69 50%, 
+                #FF6347 65%, 
+                #C71585 80%, 
+                #4B0082 100%);
+        }
+
+        .bg-sunset::after {
+            content: '';
+            position: absolute;
+            bottom: 40%;
+            left: 10%;
+            width: 120px;
+            height: 120px;
+            background: radial-gradient(circle, #FFA500 0%, #FF8C00 40%, transparent 70%);
+            border-radius: 50%;
+            opacity: 0.8;
+        }
+
+        .bg-forest {
+            background: linear-gradient(180deg, 
+                #87CEEB 0%, 
+                #B4D7E8 20%, 
+                #90EE90 40%, 
+                #228B22 60%, 
+                #006400 80%, 
+                #013220 100%);
+        }
+
+        .bg-forest::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 50%;
+            background: 
+                radial-gradient(ellipse at 15% 80%, rgba(34, 139, 34, 0.6) 0%, transparent 30%),
+                radial-gradient(ellipse at 40% 85%, rgba(0, 100, 0, 0.7) 0%, transparent 35%),
+                radial-gradient(ellipse at 70% 80%, rgba(34, 139, 34, 0.6) 0%, transparent 30%),
+                radial-gradient(ellipse at 90% 85%, rgba(0, 100, 0, 0.5) 0%, transparent 30%);
+        }
+
+        .bg-aurora {
+            background: linear-gradient(180deg, 
+                #0B1026 0%, 
+                #1B2B4F 20%, 
+                #2D5F8D 40%, 
+                #1E3A5F 60%, 
+                #0F2540 80%, 
+                #000814 100%);
+        }
+
+        .bg-aurora::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 60%;
+            background: 
+                radial-gradient(ellipse at 30% 20%, rgba(0, 255, 127, 0.3) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 30%, rgba(138, 43, 226, 0.2) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 15%, rgba(0, 191, 255, 0.25) 0%, transparent 60%);
+            animation: aurora-shimmer 8s ease-in-out infinite;
+        }
+
+        @keyframes aurora-shimmer {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
         }
 
         .game-title {
@@ -41,6 +181,19 @@
             color: #fff;
             text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
             z-index: 10;
+        }
+
+        .scene-label {
+            position: absolute;
+            top: 70px;
+            right: 30px;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.8);
+            background: rgba(0, 0, 0, 0.3);
+            padding: 8px 15px;
+            border-radius: 20px;
+            z-index: 10;
+            backdrop-filter: blur(5px);
         }
 
         .rope {
@@ -239,13 +392,38 @@
 
         .score-panel {
             position: absolute;
-            top: 80px;
+            top: 110px;
             right: 30px;
             background: rgba(255, 255, 255, 0.9);
             padding: 20px;
             border-radius: 15px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
             min-width: 150px;
+            z-index: 10;
+        }
+
+        .music-toggle {
+            position: absolute;
+            top: 20px;
+            left: 30px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 10px 15px;
+            border-radius: 25px;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            font-size: 24px;
+            z-index: 10;
+            transition: all 0.2s;
+            user-select: none;
+        }
+
+        .music-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .music-toggle.muted {
+            opacity: 0.5;
         }
 
         .score-item {
@@ -338,7 +516,15 @@
 </head>
 <body>
     <div class="game-container">
+        <div class="background-layer bg-mountain active" id="bg1"></div>
+        <div class="background-layer bg-ocean" id="bg2"></div>
+        <div class="background-layer bg-sunset" id="bg3"></div>
+        <div class="background-layer bg-forest" id="bg4"></div>
+        <div class="background-layer bg-aurora" id="bg5"></div>
+        
         <div class="game-title">⚡ BOLT DROP ⚡</div>
+        <div class="scene-label" id="sceneLabel">Mountain Vista</div>
+        <div class="music-toggle" id="musicToggle">🔊</div>
         
         <div class="rope">
             <div class="rope-thread"></div>
@@ -351,9 +537,7 @@
         
         <div class="bolt" id="bolt"></div>
         
-        <div class="bucket" id="bucket">
-            <div class="bucket-label">TARGET</div>
-        </div>
+        <div id="bucketsContainer"></div>
         
         <div class="score-panel">
             <div class="score-item">Score: <span class="score-value" id="score">0</span></div>
@@ -376,7 +560,7 @@
     <script>
         const electromagnet = document.getElementById('electromagnet');
         const bolt = document.getElementById('bolt');
-        const bucket = document.getElementById('bucket');
+        const bucketsContainer = document.getElementById('bucketsContainer');
         const holdButton = document.getElementById('holdButton');
         const resetButton = document.getElementById('resetButton');
         const indicator = document.getElementById('indicator');
@@ -384,12 +568,14 @@
         const scoreDisplay = document.getElementById('score');
         const hitsDisplay = document.getElementById('hits');
         const triesDisplay = document.getElementById('tries');
+        const musicToggle = document.getElementById('musicToggle');
+        const sceneLabel = document.getElementById('sceneLabel');
 
         let magnetPosition = 100;
         let boltPosition = { x: 120, y: 140 };
         let isHolding = false;
         let isFalling = false;
-        let bucketPosition = 0;
+        let buckets = [];
         let slideSpeed = 2;
         let fallSpeed = 0;
         let gravity = 0.5;
@@ -397,15 +583,65 @@
         let hits = 0;
         let tries = 0;
         let animationFrame = null;
+        let currentBgIndex = 0;
+        let isMusicPlaying = false;
+        
+        let audioContext = null;
+        let masterGain = null;
+        let oscillators = [];
+
+        const backgrounds = [
+            { name: 'Mountain Vista', class: 'bg-mountain' },
+            { name: 'Ocean Breeze', class: 'bg-ocean' },
+            { name: 'Sunset Dreams', class: 'bg-sunset' },
+            { name: 'Forest Serenity', class: 'bg-forest' },
+            { name: 'Aurora Night', class: 'bg-aurora' }
+        ];
+
+        function createBuckets() {
+            bucketsContainer.innerHTML = '';
+            buckets = [];
+            
+            const numBuckets = Math.floor(Math.random() * 2) + 2;
+            const positions = [];
+            
+            for (let i = 0; i < numBuckets; i++) {
+                let pos;
+                let valid = false;
+                
+                while (!valid) {
+                    pos = Math.random() * 500 + 150;
+                    valid = true;
+                    
+                    for (let existingPos of positions) {
+                        if (Math.abs(pos - existingPos) < 120) {
+                            valid = false;
+                            break;
+                        }
+                    }
+                }
+                
+                positions.push(pos);
+                
+                const bucketEl = document.createElement('div');
+                bucketEl.className = 'bucket';
+                bucketEl.style.left = pos + 'px';
+                bucketEl.innerHTML = '<div class="bucket-label">TARGET</div>';
+                bucketsContainer.appendChild(bucketEl);
+                
+                buckets.push({
+                    element: bucketEl,
+                    x: pos
+                });
+            }
+        }
 
         function init() {
-            const randomBucketPos = Math.random() * 500 + 150;
-            bucket.style.left = randomBucketPos + 'px';
-            bucketPosition = randomBucketPos;
-            
+            createBuckets();
             magnetPosition = 100;
             boltPosition = { x: 120, y: 140 };
             updatePositions();
+            changeBackground();
         }
 
         function updatePositions() {
@@ -448,20 +684,28 @@
 
         function checkHit() {
             const boltCenter = boltPosition.x + 10;
-            const bucketLeft = bucketPosition;
-            const bucketRight = bucketPosition + 100;
+            let hitBucket = false;
             
             tries++;
             triesDisplay.textContent = tries;
             
-            if (boltCenter >= bucketLeft && boltCenter <= bucketRight) {
-                hits++;
-                score += 100;
-                showMessage('🎯 BULLSEYE!', 'success');
-                createParticles(boltPosition.x + 10, boltPosition.y);
-                hitsDisplay.textContent = hits;
-                scoreDisplay.textContent = score;
-            } else {
+            for (let bucket of buckets) {
+                const bucketLeft = bucket.x;
+                const bucketRight = bucket.x + 100;
+                
+                if (boltCenter >= bucketLeft && boltCenter <= bucketRight) {
+                    hitBucket = true;
+                    hits++;
+                    score += 100;
+                    showMessage('🎯 BULLSEYE!', 'success');
+                    createParticles(boltPosition.x + 10, boltPosition.y);
+                    hitsDisplay.textContent = hits;
+                    scoreDisplay.textContent = score;
+                    break;
+                }
+            }
+            
+            if (!hitBucket) {
                 showMessage('💥 MISSED!', 'miss');
                 if (score > 0) score -= 10;
                 scoreDisplay.textContent = score;
@@ -470,6 +714,15 @@
             setTimeout(() => {
                 resetRound();
             }, 1500);
+        }
+
+        function changeBackground() {
+            const allBgs = document.querySelectorAll('.background-layer');
+            allBgs.forEach(bg => bg.classList.remove('active'));
+            
+            currentBgIndex = (currentBgIndex + 1) % backgrounds.length;
+            allBgs[currentBgIndex].classList.add('active');
+            sceneLabel.textContent = backgrounds[currentBgIndex].name;
         }
 
         function showMessage(text, className) {
@@ -495,9 +748,8 @@
         }
 
         function resetRound() {
-            const randomBucketPos = Math.random() * 500 + 150;
-            bucket.style.left = randomBucketPos + 'px';
-            bucketPosition = randomBucketPos;
+            createBuckets();
+            changeBackground();
             
             magnetPosition = 100;
             boltPosition = { x: 120, y: 140 };
@@ -511,6 +763,77 @@
             electromagnet.classList.remove('active');
             
             updatePositions();
+        }
+
+        function initAudio() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                masterGain = audioContext.createGain();
+                masterGain.connect(audioContext.destination);
+                masterGain.gain.value = 0.15;
+            }
+        }
+
+        function createAmbientMusic() {
+            initAudio();
+            
+            oscillators.forEach(osc => {
+                try { osc.stop(); } catch(e) {}
+            });
+            oscillators = [];
+            
+            const notes = [
+                { freq: 220, gain: 0.3 },
+                { freq: 330, gain: 0.25 },
+                { freq: 440, gain: 0.2 },
+                { freq: 165, gain: 0.35 },
+                { freq: 550, gain: 0.15 }
+            ];
+            
+            notes.forEach((note, index) => {
+                const osc = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+                const lfo = audioContext.createOscillator();
+                const lfoGain = audioContext.createGain();
+                
+                osc.type = 'sine';
+                osc.frequency.value = note.freq;
+                
+                lfo.type = 'sine';
+                lfo.frequency.value = 0.5 + index * 0.1;
+                lfoGain.gain.value = 0.02;
+                
+                lfo.connect(lfoGain);
+                lfoGain.connect(osc.frequency);
+                
+                gain.gain.value = note.gain;
+                
+                osc.connect(gain);
+                gain.connect(masterGain);
+                
+                osc.start();
+                lfo.start();
+                
+                oscillators.push(osc);
+                oscillators.push(lfo);
+            });
+        }
+
+        function toggleMusic() {
+            if (isMusicPlaying) {
+                oscillators.forEach(osc => {
+                    try { osc.stop(); } catch(e) {}
+                });
+                oscillators = [];
+                musicToggle.textContent = '🔇';
+                musicToggle.classList.add('muted');
+                isMusicPlaying = false;
+            } else {
+                createAmbientMusic();
+                musicToggle.textContent = '🔊';
+                musicToggle.classList.remove('muted');
+                isMusicPlaying = true;
+            }
         }
 
         holdButton.addEventListener('mousedown', () => {
@@ -566,8 +889,17 @@
             scoreDisplay.textContent = score;
             hitsDisplay.textContent = hits;
             triesDisplay.textContent = tries;
+            currentBgIndex = -1;
             resetRound();
         });
+
+        musicToggle.addEventListener('click', toggleMusic);
+
+        document.addEventListener('click', () => {
+            if (!isMusicPlaying) {
+                toggleMusic();
+            }
+        }, { once: true });
 
         init();
     </script>
