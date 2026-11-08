@@ -653,15 +653,20 @@
             bottom: 160px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(255, 255, 255, 0.85);
-            padding: 18px 35px;
-            border-radius: 15px;
-            font-size: 16px;
-            color: #333;
+            background: rgba(255, 255, 255, 0.88);
+            padding: 16px 32px;
+            border-radius: 16px;
+            font-size: 15px;
+            color: #2C3E50;
             text-align: center;
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
+            box-shadow: 
+                0 6px 18px rgba(0, 0, 0, 0.22),
+                0 2px 6px rgba(0, 0, 0, 0.12),
+                inset 0 1px 1px rgba(255, 255, 255, 0.8);
             font-weight: 500;
-            backdrop-filter: blur(8px);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            letter-spacing: 0.3px;
         }
 
         .particle {
@@ -684,6 +689,59 @@
                 opacity: 0;
                 transform: translateY(120px) scale(0.3);
             }
+        }
+
+        .mist-particle {
+            position: absolute;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.25) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .mist-particle-1 {
+            width: 80px;
+            height: 80px;
+            top: 30%;
+            left: 10%;
+            animation: mist-float-1 18s ease-in-out infinite;
+        }
+
+        .mist-particle-2 {
+            width: 100px;
+            height: 100px;
+            top: 45%;
+            left: 60%;
+            animation: mist-float-2 22s ease-in-out infinite 4s;
+        }
+
+        .mist-particle-3 {
+            width: 70px;
+            height: 70px;
+            top: 25%;
+            left: 80%;
+            animation: mist-float-3 20s ease-in-out infinite 8s;
+        }
+
+        @keyframes mist-float-1 {
+            0%, 100% { transform: translate(0, 0) scale(1); opacity: 0; }
+            10% { opacity: 0.5; }
+            50% { transform: translate(25px, -15px) scale(1.3); opacity: 0.7; }
+            90% { opacity: 0.3; }
+        }
+
+        @keyframes mist-float-2 {
+            0%, 100% { transform: translate(0, 0) scale(1); opacity: 0; }
+            15% { opacity: 0.6; }
+            50% { transform: translate(-30px, -20px) scale(1.2); opacity: 0.8; }
+            85% { opacity: 0.4; }
+        }
+
+        @keyframes mist-float-3 {
+            0%, 100% { transform: translate(0, 0) scale(1); opacity: 0; }
+            12% { opacity: 0.5; }
+            50% { transform: translate(20px, 10px) scale(1.1); opacity: 0.6; }
+            88% { opacity: 0.2; }
         }
 
         @media (max-width: 768px) {
@@ -722,7 +780,11 @@
 <body>
     <div class="game-container">
         <div class="background-layer bg-alpine active" id="bg0"></div>
-        <div class="background-layer bg-lake" id="bg1"></div>
+        <div class="background-layer bg-lake" id="bg1">
+            <div class="mist-particle mist-particle-1"></div>
+            <div class="mist-particle mist-particle-2"></div>
+            <div class="mist-particle mist-particle-3"></div>
+        </div>
         <div class="background-layer bg-valley" id="bg2"></div>
         <div class="background-layer bg-bamboo" id="bg3"></div>
         <div class="background-layer bg-sunset" id="bg4"></div>
