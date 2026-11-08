@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bolt Drop - Electromagnetic Challenge</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .game-container {
+            position: relative;
+            width: 800px;
+            height: 600px;
+            background: linear-gradient(180deg, #87CEEB 0%, #E0F6FF 100%);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            overflow: hidden;
+        }
+
+        .game-title {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 36px;
+            font-weight: bold;
+            color: #fff;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+            z-index: 10;
+        }
+
+        .rope {
+            position: absolute;
+            top: 80px;
+            left: 100px;
+            right: 100px;
+            height: 12px;
+            background: linear-gradient(180deg, #8B4513 0%, #654321 50%, #8B4513 100%);
+            border-radius: 6px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .rope-thread {
+            position: absolute;
+            width: 100%;
+            height: 4px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: repeating-linear-gradient(
+                90deg,
+                #A0522D 0px,
+                #8B4513 10px,
+                #654321 20px,
+                #8B4513 30px
+            );
+        }
+
+        .electromagnet {
+            position: absolute;
+            width: 80px;
+            height: 60px;
+            background: linear-gradient(180deg, #C0C0C0 0%, #808080 100%);
+            border-radius: 10px 10px 40% 40%;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+            transition: left 0.05s linear;
+            z-index: 5;
+        }
+
+        .electromagnet.active {
+            box-shadow: 0 6px 12px rgba(255, 215, 0, 0.6), 0 0 20px rgba(255, 215, 0, 0.4);
+        }
+
+        .magnet-coil {
+            position: absolute;
+            width: 60px;
+            height: 40px;
+            top: 10px;
+            left: 10px;
+            background: linear-gradient(90deg, #DAA520 0%, #FFD700 50%, #DAA520 100%);
+            border-radius: 8px;
+            border: 3px solid #B8860B;
+        }
+
+        .magnet-indicator {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            top: 5px;
+            right: 5px;
+            background: #00FF00;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #00FF00;
+            transition: background 0.2s;
+        }
+
+        .magnet-indicator.off {
+            background: #666;
+            box-shadow: none;
+        }
+
+        .bolt {
+            position: absolute;
+            width: 20px;
+            height: 40px;
+            background: linear-gradient(180deg, #A9A9A9 0%, #696969 50%, #A9A9A9 100%);
+            border-radius: 4px;
+            transition: top 0.05s linear, left 0.05s linear;
+            z-index: 6;
+        }
+
+        .bolt::before {
+            content: '';
+            position: absolute;
+            width: 28px;
+            height: 8px;
+            top: 8px;
+            left: -4px;
+            background: linear-gradient(90deg, #A9A9A9 0%, #696969 50%, #A9A9A9 100%);
+            border-radius: 2px;
+        }
+
+        .bolt::after {
+            content: '';
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            bottom: 4px;
+            left: 6px;
+            background: #444;
+            border-radius: 50%;
+        }
+
+        .bucket {
+            position: absolute;
+            bottom: 50px;
+            width: 100px;
+            height: 80px;
+            background: linear-gradient(180deg, #FF6347 0%, #DC143C 100%);
+            border-radius: 8px 8px 12px 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+            border: 4px solid #8B0000;
+        }
+
+        .bucket::before {
+            content: '';
+            position: absolute;
+            width: 110%;
+            height: 15px;
+            top: -8px;
+            left: -5%;
+            background: linear-gradient(180deg, #FF7F50 0%, #FF6347 100%);
+            border-radius: 8px 8px 0 0;
+            border: 3px solid #8B0000;
+            border-bottom: none;
+        }
+
+        .bucket-label {
+            position: absolute;
+            bottom: 25px;
+            width: 100px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: bold;
+            color: #FFD700;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .controls {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            z-index: 10;
+        }
+
+        .hold-button {
+            padding: 20px 40px;
+            font-size: 24px;
+            font-weight: bold;
+            background: linear-gradient(180deg, #32CD32 0%, #228B22 100%);
+            color: white;
+            border: 4px solid #006400;
+            border-radius: 15px;
+            cursor: pointer;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+            transition: all 0.1s;
+            user-select: none;
+        }
+
+        .hold-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+        }
+
+        .hold-button:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(180deg, #228B22 0%, #006400 100%);
+        }
+
+        .hold-button.released {
+            background: linear-gradient(180deg, #DC143C 0%, #8B0000 100%);
+            border-color: #660000;
+        }
+
+        .reset-button {
+            padding: 20px 40px;
+            font-size: 20px;
+            font-weight: bold;
+            background: linear-gradient(180deg, #4169E1 0%, #1e3c72 100%);
+            color: white;
+            border: 4px solid #000080;
+            border-radius: 15px;
+            cursor: pointer;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+            transition: all 0.1s;
+        }
+
+        .reset-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+        }
+
+        .score-panel {
+            position: absolute;
+            top: 80px;
+            right: 30px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            min-width: 150px;
+        }
+
+        .score-item {
+            margin: 8px 0;
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .score-value {
+            color: #1e3c72;
+            font-size: 20px;
+        }
+
+        .message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 48px;
+            font-weight: bold;
+            color: #FFD700;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.7);
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        .message.show {
+            opacity: 1;
+        }
+
+        .message.success {
+            color: #00FF00;
+            animation: pulse 0.5s ease-in-out;
+        }
+
+        .message.miss {
+            color: #FF0000;
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.2); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translate(-50%, -50%); }
+            25% { transform: translate(-45%, -50%); }
+            75% { transform: translate(-55%, -50%); }
+        }
+
+        .instructions {
+            position: absolute;
+            bottom: 140px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 14px;
+            color: #333;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .particle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #FFD700;
+            border-radius: 50%;
+            pointer-events: none;
+            animation: particle-fall 1s ease-in forwards;
+        }
+
+        @keyframes particle-fall {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(100px) scale(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="game-title">⚡ BOLT DROP ⚡</div>
+        
+        <div class="rope">
+            <div class="rope-thread"></div>
+        </div>
+        
+        <div class="electromagnet" id="electromagnet">
+            <div class="magnet-coil"></div>
+            <div class="magnet-indicator" id="indicator"></div>
+        </div>
+        
+        <div class="bolt" id="bolt"></div>
+        
+        <div class="bucket" id="bucket">
+            <div class="bucket-label">TARGET</div>
+        </div>
+        
+        <div class="score-panel">
+            <div class="score-item">Score: <span class="score-value" id="score">0</span></div>
+            <div class="score-item">Hits: <span class="score-value" id="hits">0</span></div>
+            <div class="score-item">Tries: <span class="score-value" id="tries">0</span></div>
+        </div>
+        
+        <div class="instructions">
+            Hold button to slide magnet → Release to drop bolt!
+        </div>
+        
+        <div class="controls">
+            <button class="hold-button" id="holdButton">HOLD TO SLIDE</button>
+            <button class="reset-button" id="resetButton">RESET</button>
+        </div>
+        
+        <div class="message" id="message"></div>
+    </div>
+
+    <script>
+        const electromagnet = document.getElementById('electromagnet');
+        const bolt = document.getElementById('bolt');
+        const bucket = document.getElementById('bucket');
+        const holdButton = document.getElementById('holdButton');
+        const resetButton = document.getElementById('resetButton');
+        const indicator = document.getElementById('indicator');
+        const message = document.getElementById('message');
+        const scoreDisplay = document.getElementById('score');
+        const hitsDisplay = document.getElementById('hits');
+        const triesDisplay = document.getElementById('tries');
+
+        let magnetPosition = 100;
+        let boltPosition = { x: 120, y: 140 };
+        let isHolding = false;
+        let isFalling = false;
+        let bucketPosition = 0;
+        let slideSpeed = 2;
+        let fallSpeed = 0;
+        let gravity = 0.5;
+        let score = 0;
+        let hits = 0;
+        let tries = 0;
+        let animationFrame = null;
+
+        function init() {
+            const randomBucketPos = Math.random() * 500 + 150;
+            bucket.style.left = randomBucketPos + 'px';
+            bucketPosition = randomBucketPos;
+            
+            magnetPosition = 100;
+            boltPosition = { x: 120, y: 140 };
+            updatePositions();
+        }
+
+        function updatePositions() {
+            electromagnet.style.left = magnetPosition + 'px';
+            electromagnet.style.top = '65px';
+            bolt.style.left = (boltPosition.x) + 'px';
+            bolt.style.top = boltPosition.y + 'px';
+        }
+
+        function slide() {
+            if (!isHolding || isFalling) return;
+            
+            magnetPosition += slideSpeed;
+            if (magnetPosition > 620) {
+                magnetPosition = 620;
+            }
+            
+            boltPosition.x = magnetPosition + 20;
+            updatePositions();
+            
+            animationFrame = requestAnimationFrame(slide);
+        }
+
+        function drop() {
+            if (!isFalling) return;
+            
+            fallSpeed += gravity;
+            boltPosition.y += fallSpeed;
+            
+            bolt.style.top = boltPosition.y + 'px';
+            
+            if (boltPosition.y >= 460) {
+                isFalling = false;
+                checkHit();
+                return;
+            }
+            
+            animationFrame = requestAnimationFrame(drop);
+        }
+
+        function checkHit() {
+            const boltCenter = boltPosition.x + 10;
+            const bucketLeft = bucketPosition;
+            const bucketRight = bucketPosition + 100;
+            
+            tries++;
+            triesDisplay.textContent = tries;
+            
+            if (boltCenter >= bucketLeft && boltCenter <= bucketRight) {
+                hits++;
+                score += 100;
+                showMessage('🎯 BULLSEYE!', 'success');
+                createParticles(boltPosition.x + 10, boltPosition.y);
+                hitsDisplay.textContent = hits;
+                scoreDisplay.textContent = score;
+            } else {
+                showMessage('💥 MISSED!', 'miss');
+                if (score > 0) score -= 10;
+                scoreDisplay.textContent = score;
+            }
+            
+            setTimeout(() => {
+                resetRound();
+            }, 1500);
+        }
+
+        function showMessage(text, className) {
+            message.textContent = text;
+            message.className = 'message show ' + className;
+            
+            setTimeout(() => {
+                message.classList.remove('show');
+            }, 1500);
+        }
+
+        function createParticles(x, y) {
+            for (let i = 0; i < 15; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = x + 'px';
+                particle.style.top = y + 'px';
+                particle.style.transform = `translate(${(Math.random() - 0.5) * 100}px, 0)`;
+                document.querySelector('.game-container').appendChild(particle);
+                
+                setTimeout(() => particle.remove(), 1000);
+            }
+        }
+
+        function resetRound() {
+            const randomBucketPos = Math.random() * 500 + 150;
+            bucket.style.left = randomBucketPos + 'px';
+            bucketPosition = randomBucketPos;
+            
+            magnetPosition = 100;
+            boltPosition = { x: 120, y: 140 };
+            fallSpeed = 0;
+            isFalling = false;
+            isHolding = false;
+            
+            holdButton.textContent = 'HOLD TO SLIDE';
+            holdButton.classList.remove('released');
+            indicator.classList.remove('off');
+            electromagnet.classList.remove('active');
+            
+            updatePositions();
+        }
+
+        holdButton.addEventListener('mousedown', () => {
+            if (isFalling) return;
+            
+            isHolding = true;
+            holdButton.textContent = 'SLIDING...';
+            indicator.classList.remove('off');
+            electromagnet.classList.add('active');
+            slide();
+        });
+
+        holdButton.addEventListener('mouseup', () => {
+            if (!isHolding || isFalling) return;
+            
+            isHolding = false;
+            isFalling = true;
+            holdButton.textContent = 'RELEASED!';
+            holdButton.classList.add('released');
+            indicator.classList.add('off');
+            electromagnet.classList.remove('active');
+            
+            if (animationFrame) {
+                cancelAnimationFrame(animationFrame);
+            }
+            
+            drop();
+        });
+
+        holdButton.addEventListener('mouseleave', () => {
+            if (isHolding && !isFalling) {
+                holdButton.dispatchEvent(new Event('mouseup'));
+            }
+        });
+
+        holdButton.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            holdButton.dispatchEvent(new Event('mousedown'));
+        });
+
+        holdButton.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            holdButton.dispatchEvent(new Event('mouseup'));
+        });
+
+        resetButton.addEventListener('click', () => {
+            if (animationFrame) {
+                cancelAnimationFrame(animationFrame);
+            }
+            score = 0;
+            hits = 0;
+            tries = 0;
+            scoreDisplay.textContent = score;
+            hitsDisplay.textContent = hits;
+            triesDisplay.textContent = tries;
+            resetRound();
+        });
+
+        init();
+    </script>
+</body>
+</html>
